@@ -1,12 +1,22 @@
 import math
 import cmath
 import numpy as np
+from typing import List
 
 ## Concepts understood from video on Fast Fourier Transform at
 ## https://www.youtube.com/watch?v=h7apO7q16V0&t=1234s
 
 
-def evaluation(coeffs, inverse=False):
+def evaluation(coeffs: List[int], inverse=False) -> List[complex]:
+
+	""" 
+	Create pts that define the polynomial by finding nth roots of unity
+
+	:param coeffs: list of coeffs [p0, p1, ..., pn] defining polynomial
+	:param inverse: when true, performs inverse operation
+
+	:return: list of complex numbers representing the polynomial
+	"""
 
 	n = 1<<(len(coeffs) - 1).bit_length()
 
@@ -46,7 +56,15 @@ def evaluation(coeffs, inverse=False):
 	return pts
 
 
-def inverse_evaluation(pts):
+def inverse_evaluation(pts: List[complex]) -> List[int]:
+
+	"""
+	Calls inverse operation of evaliation, then formats the output
+
+	:param pts: list of complex numbers representing the polynomial
+	
+	:return: list of coeffs [p0, p1, ..., pn] defining polynomial
+	"""
 
 	coeffs = evaluation(pts, inverse=True)
 
@@ -62,7 +80,18 @@ def inverse_evaluation(pts):
 			return coeffs
 
 
-def FFT(p1, p2):
+def FFT(p1: List[int], p2: List[int]) -> List[int]:
+
+	"""
+	Perform the actuall fft using the helper functinos.
+	This function multiplies two polynomials in O(nlogn) time
+
+	:param p1: list of coeffs [p0, p1, ..., pn] defining first polynomial
+	:param p2: list of coeffs [p0, p1, ..., pn] defining second polynomial
+
+	:return: list of coefficients representing the polynomial that
+	results from the multiplication of p1 and p2
+	"""
 
 	k = max(len(p1) - 1 + len(p2), len(p2) - 1 + len(p1))
 
