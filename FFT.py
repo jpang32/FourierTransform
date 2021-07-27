@@ -1,12 +1,76 @@
 import math
 import cmath
 import numpy as np
+import pprint
 from typing import List
 
 ## Concepts understood from video on Fast Fourier Transform at
 ## https://www.youtube.com/watch?v=h7apO7q16V0&t=1234s
 
 
+def rec_visualization(func):
+
+	rec_level = 1
+
+	def coeffs_to_string(coeffs):
+
+		operations = {
+			(True, True): '-',
+            (True, False): '',
+            (False, True): ' - ',
+            (False, False): ' + '
+		}
+
+		expression = []
+
+		for power, val in enumerate(coeffs):
+
+			if val == 0:
+				continue
+
+			op = operations[(not expression, val < 0)]
+
+			val = abs(val)
+
+			if val == 1 and power != 0:
+				val = ''
+
+			f = {0: '{}{}', 1: '{}{}x'}.get(power, '{}{}x^{}')
+
+			expression.append(f.format(op, val, power))
+
+
+		return ''.join(expression) or '0'
+
+
+	def wrapper(*args, **kwargs):
+
+		if (kwargs and kwargs['inverse']):
+					return func(*args, **kwargs)
+
+		nonlocal rec_level
+
+		coeff_str = coeffs_to_string(args[0])
+
+		fn_str = f"eval({coeff_str})"
+
+		whitespace = "   " * (rec_level - 1)
+
+		print(f"{whitespace} -> {fn_str}")
+
+		rec_level += 1
+
+		result = func(*args, **kwargs)
+
+		rec_level -= 1
+
+		#print(f"{whitespace} <- {result}")
+
+		return result
+
+	return wrapper
+
+@rec_visualization
 def evaluation(coeffs: List[int], inverse=False) -> List[complex]:
 
 	""" 
@@ -120,7 +184,7 @@ if __name__ == '__main__':
 	c3 = [2, 0, 0, 0, 0, 0, 5, 7]
 	c4 = [1, 7, 0, 3, 2]
 
-	print(FFT(coeffs1, coeffs2))
+	#print(FFT(coeffs1, coeffs2))
 
 	print(FFT(c3, c4))
 
