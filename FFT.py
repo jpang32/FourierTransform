@@ -46,7 +46,7 @@ def rec_visualization(func):
 	def wrapper(*args, **kwargs):
 
 		if (kwargs and kwargs['inverse']):
-					return func(*args, **kwargs)
+			return func(*args, **kwargs)
 
 		nonlocal rec_level
 
@@ -63,8 +63,6 @@ def rec_visualization(func):
 		result = func(*args, **kwargs)
 
 		rec_level -= 1
-
-		#print(f"{whitespace} <- {result}")
 
 		return result
 
@@ -144,7 +142,7 @@ def inverse_evaluation(pts: List[complex]) -> List[int]:
 			return coeffs
 
 
-def FFT(p1: List[int], p2: List[int]) -> List[int]:
+def fft(p1: List[int], p2: List[int]) -> List[int]:
 
 	"""
 	Perform the actuall fft using the helper functinos.
@@ -186,5 +184,5 @@ if __name__ == '__main__':
 
 	#print(FFT(coeffs1, coeffs2))
 
-	print(FFT(c3, c4))
+	print(fft(c3, c4))
 
