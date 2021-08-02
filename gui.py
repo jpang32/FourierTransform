@@ -20,7 +20,7 @@ class RecursiveDiagram(tk.Frame):
 	def _populate(func):
 
 		rec_level = 1
-		item_id = 0
+		item_id = 1
 
 		def coeffs_to_string(coeffs):
 
@@ -63,15 +63,15 @@ class RecursiveDiagram(tk.Frame):
 
 			coeff_str = coeffs_to_string(args[0])
 
-			fn_str = f"eval({coeff_str})"
-
-			self.tree.insert('', tk.END, text=fn_str, iid=item_id, open=False)
-
-			item_id += 1
+			fn_str = f"eval({coeff_str}) ({item_id})" 
 
 			whitespace = "   " * (rec_level - 1)
 
 			print(f"{whitespace} -> {fn_str}")
+
+			self.tree.insert('', tk.END, iid=item_id, text=fn_str, open=True)
+
+			item_id += 1
 
 			rec_level += 1
 
@@ -82,6 +82,38 @@ class RecursiveDiagram(tk.Frame):
 			return result
 
 		return wrapper
+
+
+	def _organize(func):
+
+		def place_children(self, parent_id, k):
+
+			if k == 1:
+				return
+
+			print(f"parent: {parent_id}")
+			print(k)
+
+			self.tree.move(parent_id + 1, parent_id, 2)
+			self.tree.move(parent_id + k, parent_id, 2)
+
+			place_children(self, parent_id + 1, (int)(k / 2.0))
+			place_children(self, parent_id + k, (int)(k / 2.0))
+
+		def wrapper(self, *args, **kwargs):
+
+			result = func(self, *args, **kwargs)
+
+			assert len(args[0]) == len(args[1])
+			k = len(args[0])
+
+			place_children(self, 1, k)
+			#place_children(self, k, k)
+
+			return result
+
+		return wrapper
+
 
 	@_populate
 	def evaluation(self, coeffs: List[int], inverse=False) -> List[complex]:
@@ -157,10 +189,11 @@ class RecursiveDiagram(tk.Frame):
 				return coeffs
 
 
+	@_organize
 	def fft(self, p1: List[int], p2: List[int]) -> List[int]:
 
 		"""
-		Perform the actuall fft using the helper functinos.
+		Perform the actuall fft using the helper functions.
 		This function multiplies two polynomials in O(nlogn) time
 
 		:param p1: list of coeffs [p0, p1, ..., pn] defining first polynomial
