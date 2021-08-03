@@ -63,7 +63,7 @@ class RecursiveDiagram(tk.Frame):
 
 			coeff_str = coeffs_to_string(args[0])
 
-			fn_str = f"eval({coeff_str}) ({item_id})" 
+			fn_str = f"eval({coeff_str})" 
 
 			whitespace = "   " * (rec_level - 1)
 
@@ -88,11 +88,11 @@ class RecursiveDiagram(tk.Frame):
 
 		def place_children(self, parent_id, k):
 
-			if k == 1:
-				return
-
 			print(f"parent: {parent_id}")
 			print(k)
+
+			if k == 1:
+				return
 
 			self.tree.move(parent_id + 1, parent_id, 2)
 			self.tree.move(parent_id + k, parent_id, 2)
@@ -108,7 +108,7 @@ class RecursiveDiagram(tk.Frame):
 			k = len(args[0])
 
 			place_children(self, 1, k)
-			#place_children(self, k, k)
+			place_children(self, 2 * k, k)
 
 			return result
 
