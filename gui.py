@@ -15,14 +15,28 @@ class RecursiveDiagram(tk.Frame):
 		self.tree = ttk.Treeview(parent)
 		self.tree.heading('#0', text="Recursive Diagram", anchor="w")
 
-
-	# Need to make it so that when evaluate runs, it adds function call
 	def _populate(func):
+
+		"""
+		Decorator to populate the members of the Treeview and print recursion hierarchy to terminal
+
+		:param func: function to be called, in this case, evaluate
+
+		:return: the wrapper that will be used for the function
+		"""
 
 		rec_level = 1
 		item_id = 1
 
-		def coeffs_to_string(coeffs):
+		def coeffs_to_string(coeffs: List[int]) -> str:
+
+			"""
+			Takes coefficient list and converts it into a polynomial string
+
+			:param coeffs: list of coeffs [p0, p1, ..., pn] defining polynomial
+
+			:return: a string representing the polynomial as it would be written
+			"""
 
 			operations = {
 				(True, True): '-',
@@ -54,6 +68,12 @@ class RecursiveDiagram(tk.Frame):
 
 
 		def wrapper(self, *args, **kwargs):
+			"""
+			Wrapper for function, in this case, evaluate
+			Adds members of Treeview and prints recursion hierarchy to terminal
+
+			:return: the result of running evaluate
+			"""
 
 			if (kwargs and kwargs['inverse']):
 				return func(self, *args, **kwargs)
@@ -86,10 +106,23 @@ class RecursiveDiagram(tk.Frame):
 
 	def _organize(func):
 
-		def place_children(self, parent_id, k):
+		"""
+		Decorator to organize the members of the tree into a hierarchy after being added
 
-			print(f"parent: {parent_id}")
-			print(k)
+		:param func: function to be called, in this case, fft
+
+		:return: the wrapper that will be used for the function
+		"""
+
+		def place_children(self, parent_id: int, k: int):
+
+			"""
+			Recursive function used to place the already-added children in their proper spots
+			Adds the immediate children of parent_id, then does 2 recursive calls
+
+			:param parent_id: treeview id of the parent
+			:param k: offset for id, changes according to current tree level
+			"""
 
 			if k == 1:
 				return
@@ -101,6 +134,13 @@ class RecursiveDiagram(tk.Frame):
 			place_children(self, parent_id + k, (int)(k / 2.0))
 
 		def wrapper(self, *args, **kwargs):
+
+			"""
+			Wrapper for function, in this case, fft.
+			After function is called, calls recursive function to place children
+
+			:return: the result of running fft
+			"""
 
 			result = func(self, *args, **kwargs)
 

@@ -3,6 +3,13 @@ from gui import RecursiveDiagram
 
 if __name__ == "__main__":
 
+	"""
+	Implementation of the Fast Fourier transform with visualization.
+
+	Informatoin received from video at:
+	https://www.youtube.com/watch?v=h7apO7q16V0
+	"""
+
 	c3 = [2, 0, 0, 0, 0, 0, 5, 7]
 	c4 = [1, 7, 0, 3, 2]
 
@@ -14,6 +21,4 @@ if __name__ == "__main__":
 	rd = RecursiveDiagram(root)
 	rd.fft(c3, c4)
 	rd.tree.grid(row=0, column=0, sticky='nsew')
-
-	# what does this do?
 	root.mainloop()
